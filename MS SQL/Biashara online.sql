@@ -1,0 +1,160 @@
+﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
+-- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
+
+
+--SET XACT_ABORT ON
+
+--BEGIN TRANSACTION QUICKDBD
+
+CREATE TABLE [orders] (
+    [Row_id] int  NOT NULL ,
+    [order_id] varchar(20)  NOT NULL ,
+    [created_at] datetime  NOT NULL ,
+    [quantity] int  NOT NULL ,
+    [cust_id] int  NOT NULL ,
+    [delivery] varchar(50)  NOT NULL ,
+    [add_id] int  NOT NULL ,
+    CONSTRAINT [PK_orders] PRIMARY KEY CLUSTERED (
+        [Row_id] ASC
+    )
+)
+
+CREATE TABLE [customers] (
+    [cust_id] int  NOT NULL ,
+    [cust_firstname] varchar(50)  NOT NULL ,
+    [cut_lastname] varchar(50)  NOT NULL ,
+    CONSTRAINT [PK_customers] PRIMARY KEY CLUSTERED (
+        [cust_id] ASC
+    )
+)
+
+CREATE TABLE [adreess] (
+    [add_id] int  NOT NULL ,
+    [delivery_adress1] varchar(200)  NOT NULL ,
+    [delivery_adress2] varchar(200)  NULL ,
+    [delivery_city] varchar(50)  NOT NULL ,
+    [delivery_zipcode] varchar(20)  NOT NULL ,
+    CONSTRAINT [PK_adreess] PRIMARY KEY CLUSTERED (
+        [add_id] ASC
+    )
+)
+
+CREATE TABLE [item] (
+    [item_id] Varchar(50)  NOT NULL ,
+    [sku] varchar(50)  NOT NULL ,
+    [item_name] varchar(50)  NOT NULL ,
+    [item_cat] varchar(50)  NOT NULL ,
+    [item_size] varchar(50)  NOT NULL ,
+    [item_prie] decimal(5,2)  NOT NULL 
+)
+
+CREATE TABLE [ingredint] (
+    [ing_id] varchaR(50)  NOT NULL ,
+    [ing_name] varchar(50)  NOT NULL ,
+    [ing_weight] int  NOT NULL ,
+    [ing_meas] varchar(50)  NOT NULL ,
+    [ing_price] decimal(5,2)  NOT NULL ,
+    CONSTRAINT [PK_ingredint] PRIMARY KEY CLUSTERED (
+        [ing_id] ASC
+    )
+)
+
+CREATE TABLE [recipe] (
+    [row_id] int  NOT NULL ,
+    [recipe_id] varchar(50)  NOT NULL ,
+    [ing_id] varchar(50)  NOT NULL ,
+    [quantity] int  NOT NULL ,
+    CONSTRAINT [PK_recipe] PRIMARY KEY CLUSTERED (
+        [row_id] ASC
+    )
+)
+
+CREATE TABLE [inventory] (
+    [inv_id] int  NOT NULL ,
+    [item_id] varchar(50)  NOT NULL ,
+    [quantity] int  NOT NULL ,
+    CONSTRAINT [PK_inventory] PRIMARY KEY CLUSTERED (
+        [inv_id] ASC
+    )
+)
+
+CREATE TABLE [Rota] (
+    [Row_id] int  NOT NULL ,
+    [rota_id] varchar(50)  NOT NULL ,
+    [date] datetime  NOT NULL ,
+    [shift_id] varchar(50)  NOT NULL ,
+    [staff_id] varchar(50)  NOT NULL ,
+    CONSTRAINT [PK_Rota] PRIMARY KEY CLUSTERED (
+        [Row_id] ASC
+    )
+)
+
+CREATE TABLE [staff] (
+    [staff_id] varchar(50)  NOT NULL ,
+    [first_name] varchar(50)  NOT NULL ,
+    [last_name] varchar(50)  NOT NULL ,
+    [position] varchar(50)  NOT NULL ,
+    [hourly_rate] decimal(5,2)  NOT NULL ,
+    CONSTRAINT [PK_staff] PRIMARY KEY CLUSTERED (
+        [staff_id] ASC
+    )
+)
+
+CREATE TABLE [shift] (
+    [shift_id] varchar(50)  NOT NULL ,
+    [day_of-week] varchar(50)  NOT NULL ,
+    [start_time] time  NOT NULL ,
+    [end_time] time  NOT NULL ,
+    CONSTRAINT [PK_shift] PRIMARY KEY CLUSTERED (
+        [shift_id] ASC
+    )
+)
+
+ALTER TABLE [customers] WITH CHECK ADD CONSTRAINT [FK_customers_cust_id] FOREIGN KEY([cust_id])
+REFERENCES [orders] ([cust_id])
+
+ALTER TABLE [customers] CHECK CONSTRAINT [FK_customers_cust_id]
+
+ALTER TABLE [adreess] WITH CHECK ADD CONSTRAINT [FK_adreess_add_id] FOREIGN KEY([add_id])
+REFERENCES [orders] ([add_id])
+
+ALTER TABLE [adreess] CHECK CONSTRAINT [FK_adreess_add_id]
+
+ALTER TABLE [item] WITH CHECK ADD CONSTRAINT [FK_item_item_id] FOREIGN KEY([item_id])
+REFERENCES [orders] ([order_id])
+
+ALTER TABLE [item] CHECK CONSTRAINT [FK_item_item_id]
+
+ALTER TABLE [recipe] WITH CHECK ADD CONSTRAINT [FK_recipe_recipe_id] FOREIGN KEY([recipe_id])
+REFERENCES [item] ([sku])
+
+ALTER TABLE [recipe] CHECK CONSTRAINT [FK_recipe_recipe_id]
+
+ALTER TABLE [recipe] WITH CHECK ADD CONSTRAINT [FK_recipe_ing_id] FOREIGN KEY([ing_id])
+REFERENCES [ingredint] ([ing_id])
+
+ALTER TABLE [recipe] CHECK CONSTRAINT [FK_recipe_ing_id]
+
+ALTER TABLE [inventory] WITH CHECK ADD CONSTRAINT [FK_inventory_item_id] FOREIGN KEY([item_id])
+REFERENCES [recipe] ([ing_id])
+
+ALTER TABLE [inventory] CHECK CONSTRAINT [FK_inventory_item_id]
+
+ALTER TABLE [Rota] WITH CHECK ADD CONSTRAINT [FK_Rota_date] FOREIGN KEY([date])
+REFERENCES [orders] ([created_at])
+
+ALTER TABLE [Rota] CHECK CONSTRAINT [FK_Rota_date]
+
+ALTER TABLE [Rota] WITH CHECK ADD CONSTRAINT [FK_Rota_staff_id] FOREIGN KEY([staff_id])
+REFERENCES [staff] ([staff_id])
+
+ALTER TABLE [Rota] CHECK CONSTRAINT [FK_Rota_staff_id]
+
+ALTER TABLE [shift] WITH CHECK ADD CONSTRAINT [FK_shift_shift_id] FOREIGN KEY([shift_id])
+REFERENCES [Rota] ([shift_id])
+
+ALTER TABLE [shift] CHECK CONSTRAINT [FK_shift_shift_id]
+
+COMMIT TRANSACTION QUICKDBD
+
+select * from Rota
